@@ -3,7 +3,7 @@ name: Build Flutter APK
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "رئيسي" ]
 
 jobs:
   build:
@@ -16,23 +16,20 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
-          channel: stable
+          channel: 'stable'
 
       - name: Extract project
         run: |
-          unzip -q accounting_flutter_project.zip -d app
+          unzip -q accounting_flutter_project.zip
 
       - name: Install dependencies
-        working-directory: app
         run: flutter pub get
 
       - name: Build APK
-        working-directory: app
         run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: app/build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
