@@ -2,8 +2,6 @@ name: Build Flutter APK
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "main", "رئيسي" ]
 
 jobs:
   build:
@@ -13,23 +11,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: stable
 
       - name: Extract project
         run: |
           unzip -q accounting_flutter_project.zip
+          cd accounting_flutter
+          echo "PROJECT_DIR=$PWD" >> $GITHUB_ENV
 
-      - name: Install dependencies
+      - name: Get dependencies
+        working-directory: accounting_flutter
         run: flutter pub get
 
       - name: Build APK
+        working-directory: accounting_flutter
         run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: accounting_flutter/build/app/outputs/flutter-apk/app-release.apk
